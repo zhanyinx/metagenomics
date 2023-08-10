@@ -55,7 +55,7 @@
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "description": "Path to control reference files.",
-                    "help_text": "Databases, provided by Paolo Manghi until bioconductol for metaphlan 4 is released.",
+                    "help_text": "Databases, provided by Paolo Manghi until curatedMetagenomicData for metaphlan 4 is released.",
                     "fa_icon": "far fa-file-control-db"
                 }
             }
