@@ -2,15 +2,19 @@ process metaphlan {
     container "docker://biobakery/metaphlan:4.0.2"
 
     cpus 15
-    memory '20G'
+    errorStrategy 'retry'
+    maxRetries = 3
+    memory { 20.GB * task.attempt }
+
+    publishDir "${params.outdir}/${params.date}/${patient}", mode: "copy"
     
     input:
     tuple val(patient), path(sample_path), val(population)
 
 
     output:
-    tuple val(patient), path("*profiled_metagenome.txt")    , emit: profile
-    path "versions.yml"                                     , emit: versions
+    tuple val(patient), path("*profiled_metagenome.txt"), val(population)   , emit: profile
+    path "versions.yml"                                                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

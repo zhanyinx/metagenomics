@@ -1,5 +1,5 @@
 
-
+params.date = new java.util.Date().format('yyMMdd')
 
 
 /*
@@ -10,6 +10,7 @@
 
 
 include {metaphlan} from '../modules/local/metaphlan/main.nf'
+include {filtering} from '../modules/local/filtering/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +27,7 @@ input_channel = extract_csv(file(params.input))
 
 workflow METAGENOMICS {
     metaphlan(input_channel)
-    
+    filtering(metaphlan.out.profile)
 }
 
 

@@ -38,16 +38,25 @@
             "fa_icon": "fas fa-dna",
             "description": "Reference genome related files and options required for the workflow.",
             "required": [
-                "bowtie2db"
+                "bowtie2db",
+                "control_db"
             ],
             "properties": {
                 "bowtie2db": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "description": "Path to reference files.",
+                    "description": "Path to bowtie reference files.",
                     "help_text": "Databases, can be downloaded from here: http://cmprod1.cibio.unitn.it/biobakery4/metaphlan_databases/",
-                    "fa_icon": "far fa-file-target"
+                    "fa_icon": "far fa-file-bowtie2db"
+                },
+                "control_db": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "description": "Path to control reference files.",
+                    "help_text": "Databases, provided by Paolo Manghi until bioconductol for metaphlan 4 is released.",
+                    "fa_icon": "far fa-file-control-db"
                 }
             }
         },
@@ -241,6 +250,23 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                }
+            }
+        },
+        "filtering": {
+            "title": "Filtering options for profile",
+            "type": "object",
+            "fa_icon": "fab fa-filtering",
+            "description": "Set filter paramenters",
+            "help_text": "Filter parameters such as the number of clades to keep",
+            "properties": {
+                "ntop": {
+                    "type": "integer",
+                    "description": "Number of clades to keep in the report.",
+                    "default": 20,
+                    "fa_icon": "fas fa-ntop",
+                    "hidden": true,
+                    "help_text": "Maximum number of clades to keep"
                 }
             }
         }
