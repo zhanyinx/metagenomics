@@ -6,7 +6,7 @@ process metaphlan {
     maxRetries = 3
     memory { 20.GB * task.attempt }
 
-    publishDir "${params.outdir}/${params.date}/${patient}", mode: "copy"
+    //publishDir "${params.outdir}/${params.date}/${patient}", mode: "copy"
     
     input:
     tuple val(patient), path(sample_path), val(population)
