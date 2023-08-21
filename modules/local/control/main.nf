@@ -10,7 +10,11 @@ process add_mean_sd_healthy{
         tuple val(patient), path("*.metaphlan.with.ranges.tsv"), val(population) 
     script:
     """
-        awk -F '\\t' 'BEGIN{print "# control database ${params.control_db}/${population}_controls.csv" > "unchanged"}{
+        aenrichment=`grep -nr "t__" ${metaphlan}  | wc -l`
+        awk -F '\\t' 'BEGIN{
+                print "# control database ${params.control_db}/${population}_controls.csv" > "unchanged"
+                print "# alpha enrichment (number of clades): ""'"\$aenrichment"'" > "unchanged"
+            }{
                 if(\$0~/^#/){
                     if(\$0~/^#clade_name/){
                         printf "%s\\t%s\\t%s\\n", \$0, "mean_healthy", "sd_healthy" > "unchanged"
@@ -33,9 +37,14 @@ process add_mean_sd_healthy{
 
             l1=`awk -F '\\t' '{if(NR=="'"\$line"'"+0.) print \$(NF-1)}' tochange`
             l2=`awk -F '\\t' '{if(NR=="'"\$line"'"+0.) print \$(NF)}' tochange`
+            fraction_positive=`grep -nr \$l2 ${params.control_db}/${population}_controls.csv | grep \$l2 | awk -F ',' 'BEGIN{n=0; s=0; ss=0}{if(\$2>0) s++; n++}END{print s/n; }'`
             mean=`grep -nr \$l2 ${params.control_db}/${population}_controls.csv | grep \$l2 | awk -F ',' 'BEGIN{n=0; s=0; ss=0}{s+=\$2; n++}END{print s/n; }'`
             sd=`grep -nr \$l2 ${params.control_db}/${population}_controls.csv | grep \$l2 | awk -F ',' 'BEGIN{n=0; s=0; ss=0;m="'"\$mean"'"+0.}{s+=(\$2-m)*(\$2-m); n++}END{print sqrt(s/n); }'`
-            awk -F '\\t' '{if(NR=="'"\$line"'"+0.) {printf "%s\\t", \$0 >> "unchanged"; printf "%s\\t", "'"\$mean"'" >> "unchanged"; printf "%s\\n", "'"\$sd"'" >> "unchanged"}}' replicate.tochange
+            awk -F '\\t' '{if(NR=="'"\$line"'"+0.) {
+                printf "%s\\t", \$0 >> "unchanged"; 
+                printf "%s\\t", "'"\$mean"'" >> "unchanged"; 
+                printf "%s\\t", "'"\$sd"'" >> "unchanged"; 
+                printf "%s\\n", "'"\${fraction_positive}"'" >> "unchanged"}}' replicate.tochange
         done
 
         cp unchanged ${patient}.metaphlan.with.ranges.tsv

@@ -10,10 +10,10 @@ process filtering{
         tuple val(patient), path("*.tsv"), val(population) 
     script:
     """
-        awk -F '\\t' 'BEGIN{max="'"${params.ntop}"'"+0.; count=0}{
+        awk -F '\\t' 'BEGIN{max="'"${params.ntop}"'"+0.; count=0;}{
             if(\$0~/^#/){
                 if(\$0~/^#clade_name/){
-                    printf "%s\\t%s\\t%s\\t%s\\t%s\\n", "Family","specie","value","mean_control","sd_control"
+                    printf "%s\\t%s\\t%s\\t%s\\t%s\\n", "Family","species_level_genome_bin","value","mean_control","sd_control", "fraction_healthy_positive"
                 }else{
                     print \$0
                 }
@@ -21,7 +21,7 @@ process filtering{
                 count++
                 split(\$1,array,"|"); 
                 for(i=1;i<=length(array);i++) if(array[i] ~ /^f__/ || array[i] ~ /^t__/) printf "%s\\t", array[i] 
-                printf "%s\\t%s\\t%s\\n", \$(NF-3), \$(NF-1), \$NF 
+                printf "%s\\t%s\\t%s\\n", \$(NF-4), \$(NF-2), \$(NF-1), \$NF 
                 
                 if(count>=max){exit}
             }
