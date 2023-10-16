@@ -7,7 +7,7 @@ process filtering{
     input:
         tuple val(patient), path(metaphlan), val(population) 
     output:
-        tuple val(patient), path("*.tsv"), val(population) 
+        tuple val(patient), path("*clades.tsv") 
     script:
     """
         awk -F '\\t' 'BEGIN{max="'"${params.ntop}"'"+0.; count=0;}{

@@ -12,6 +12,7 @@ params.date = new java.util.Date().format('yyMMdd')
 include {metaphlan} from '../modules/local/metaphlan/main.nf'
 include {add_mean_sd_healthy} from '../modules/local/control/main.nf'
 include {filtering} from '../modules/local/filtering/main.nf'
+include {barplot} from '../modules/local/plot/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,6 +31,7 @@ workflow METAGENOMICS {
     metaphlan(input_channel)
     add_mean_sd_healthy(metaphlan.out.profile)
     filtering(add_mean_sd_healthy.out)
+    barplot(filtering.out)
 }
 
 
